@@ -264,7 +264,7 @@ async def parse_cmd(argv: Optional[Sequence[str]] = None):
             str,
             typer.Option(
                 "--specified_id",
-                help="Post/video ID list in detail mode, multiple IDs separated by commas (supports full URL or ID)",
+                help="Post/video ID list in detail mode, separated by commas or newlines (supports full URL or ID)",
                 rich_help_panel="Basic Configuration",
             ),
         ] = "",
@@ -272,7 +272,7 @@ async def parse_cmd(argv: Optional[Sequence[str]] = None):
             str,
             typer.Option(
                 "--creator_id",
-                help="Creator ID list in creator mode, multiple IDs separated by commas (supports full URL or ID)",
+                help="Creator ID list in creator mode, separated by commas or newlines (supports full URL or ID)",
                 rich_help_panel="Basic Configuration",
             ),
         ] = "",
@@ -352,8 +352,8 @@ async def parse_cmd(argv: Optional[Sequence[str]] = None):
         init_db_value = init_db.value if init_db else None
 
         # Parse specified_id and creator_id into lists
-        specified_id_list = [id.strip() for id in specified_id.split(",") if id.strip()] if specified_id else []
-        creator_id_list = [id.strip() for id in creator_id.split(",") if id.strip()] if creator_id else []
+        specified_id_list = [item.strip() for item in re.split(r"[,\r\n]+", specified_id) if item.strip()]
+        creator_id_list = [item.strip() for item in re.split(r"[,\r\n]+", creator_id) if item.strip()]
 
         # override global config
         config.PLATFORM = platform.value
